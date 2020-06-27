@@ -1,0 +1,22 @@
+{
+  "name": "TeamIcon/TeamIconApiToolkit",
+  "description": "A set of classes to create a vanilla PHP API ",
+  "type": "package",
+  "require": {
+    "php": ">=7.4.0"
+  },
+  "license": "mit",
+  "authors": [
+    {
+      "name": "Marco Sarti",
+      "email": "m.sarti@teamicon.it",
+      "homepage": "https://www.team-icon.it"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "TeamIcon\\TeamIconApiToolkit\\": "src/"
+    }
+  }
+}
