@@ -1,5 +1,5 @@
 {
-  "name": "TeamIcon/TeamIconApiToolkit",
+  "name": "teamicon/apikit",
   "description": "A set of classes to create a vanilla PHP API ",
   "type": "package",
   "require": {
@@ -16,7 +16,7 @@
   "minimum-stability": "dev",
   "autoload": {
     "psr-4": {
-      "TeamIcon\\TeamIconApiToolkit\\": "src/"
+      "teamicon\\apikit\\": "src/"
     }
   }
 }
