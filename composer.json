@@ -1,10 +1,6 @@
 {
   "name": "teamicon/apikit",
   "description": "A set of classes to create a vanilla PHP API ",
-  "type": "package",
-  "require": {
-    "php": ">=7.4.0"
-  },
   "license": "mit",
   "authors": [
     {
