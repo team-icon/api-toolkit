@@ -1,5 +1,5 @@
 <?php
-    namespace TeamIcon\TeamIconApiToolkit;
+    namespace teamicon\apikit;
 
     abstract class EnumHttpMethod {
         public const GET = "GET";

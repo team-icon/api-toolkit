@@ -1,5 +1,5 @@
 <?php
-    namespace TeamIcon\TeamIconApiToolkit\Exceptions;
+    namespace teamicon\apikit\Exceptions;
 
     require_once(__DIR__ . "/CustomException.php");
 

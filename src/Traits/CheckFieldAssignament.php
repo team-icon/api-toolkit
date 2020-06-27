@@ -1,7 +1,10 @@
 <?php
-    namespace TeamIcon\TeamIconApiToolkit\Traits;
-    use \TeamIcon\Database\EnumDbFieldType;
-    use \TeamIcon\Exceptions\{InvalidArgumentException, NullReferenceException, InvalidTypeException};
+    namespace teamicon\apikit\Traits;
+    use DateTime;
+    use DateTimeZone;
+    use \teamicon\apikit\Database\EnumDbFieldType;
+    use \teamicon\apikit\Exceptions\{InvalidArgumentException, NullReferenceException, InvalidTypeException};
+    use Throwable;
 
     trait CheckFieldAssignament {
         protected function CheckFieldAssignament(string $fieldName, $fieldValue, int $fieldType, int $fieldMaxLenght = 0, bool $allowNull = false) : bool {
@@ -44,16 +47,16 @@
                         new InvalidTypeException($fieldName, gettype($fieldValue), "datetime");
                         return false;
                     }
-                    try { $dt = \DateTime::createFromFormat("Y-m-d H:i:s", $fieldValue, new \DateTimeZone("Europe\Rome")); }
-                    catch(\Throwable $ex) { return false; }
+                    try { DateTime::createFromFormat("Y-m-d H:i:s", $fieldValue, new DateTimeZone("Europe\Rome")); }
+                    catch(Throwable $ex) { return false; }
                     return true;
                 case EnumDbFieldType::DATE:
                     if(!($allowNull && is_null($fieldValue)) || !is_string($fieldValue) || strlen($fieldValue) != 10) {
                         new InvalidTypeException($fieldName, gettype($fieldValue), "date");
                         return false;
                     }
-                    try { $dt = \DateTime::createFromFormat("Y-m-d", $fieldValue, new \DateTimeZone("Europe\Rome")); }
-                    catch(\Throwable $ex) { return false; }
+                    try { DateTime::createFromFormat("Y-m-d", $fieldValue, new DateTimeZone("Europe\Rome")); }
+                    catch(Throwable $ex) { return false; }
                     return true;
                 case EnumDbFieldType::STRING:
                     if(!($allowNull && is_null($fieldValue)) || !is_string($fieldValue) || ($fieldMaxLenght > 0 && strlen($fieldValue) != $fieldMaxLenght)) {

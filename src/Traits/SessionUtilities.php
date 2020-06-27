@@ -1,6 +1,6 @@
 <?php
-    namespace TeamIcon\TeamIconApiToolkit\Traits;
-    use \TeamIcon\Logger;
+    namespace teamicon\apikit\Traits;
+    use \teamicon\apikit\Logger;
 
     require_once(__DIR__ . "/../Logger.php");
 

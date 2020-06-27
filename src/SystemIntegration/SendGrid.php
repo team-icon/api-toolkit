@@ -1,8 +1,8 @@
 <?php
-    namespace TeamIcon\TeamIconApiToolkit\SystemIntegration;
+    namespace teamicon\apikit\SystemIntegration;
 
-    use \PHPMailer\PHPMailer\{PHPMailer, SMTP, Exception};
-    use \TeamIcon\Exceptions\InvalidArgumentException;
+    use \PHPMailer\PHPMailer\{PHPMailer, SMTP};
+    use \teamicon\apikit\Exceptions\InvalidArgumentException;
 
     require_once(__DIR__ . "/PhpMailer/PHPMailer.php");
     require_once(__DIR__ . "/PhpMailer/SMTP.php");

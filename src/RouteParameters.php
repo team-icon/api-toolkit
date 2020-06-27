@@ -1,5 +1,5 @@
 <?php
-    namespace TeamIcon\TeamIconApiToolkit;
+    namespace teamicon\apikit;
 
     final class RouteParameters {
         protected string $sc;

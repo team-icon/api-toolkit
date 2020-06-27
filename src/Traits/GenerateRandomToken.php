@@ -1,6 +1,7 @@
 <?php
-    namespace TeamIcon\TeamIconApiToolkit\Traits;
-    use \TeamIcon\Exceptions\CustomException;
+    namespace teamicon\apikit\Traits;
+    use \teamicon\apikit\Exceptions\CustomException;
+    use Throwable;
 
     require_once(__DIR__ . "/../Exceptions/CustomException.php");
 
@@ -16,7 +17,7 @@
                     $pass .= $alphabet[$n];
                 }
                 return $pass;
-            } catch(\Throwable $ex) {
+            } catch(Throwable $ex) {
                 new CustomException("Generic error (code " . $ex->getCode() . "): " . $ex->getMessage(), $ex->getCode());
                 return "";
             }

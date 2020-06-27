@@ -1,6 +1,6 @@
 <?php
-    namespace TeamIcon\TeamIconApiToolkit;
-    use \TeamIcon\Traits\DebugInfo;
+    namespace teamicon\apikit;
+    use \teamicon\apikit\Traits\DebugInfo;
 
     require_once(__DIR__ . "/Traits/DebugInfo.php");
 
@@ -13,7 +13,7 @@
         use DebugInfo;
 
         private static function GetInfo(string $type) : array {
-            $info = static::DebugInfo($type);
+            $info = static::DebugInfo();
             $fileName = $info["dt-now"] . ".log";
             $directory = __DIR__ . "/../logs/$type/";
             $pathFile = $directory . $fileName;

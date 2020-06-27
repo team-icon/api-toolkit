@@ -1,5 +1,5 @@
 <?php
-    namespace TeamIcon\TeamIconApiToolkit\Database;
+    namespace teamicon\apikit\Database;
 
     abstract class EnumDbFieldType {
         public const BOOL = 0;

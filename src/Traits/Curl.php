@@ -1,8 +1,8 @@
 <?php
-    namespace TeamIcon\TeamIconApiToolkit\Traits;
-    use \TeamIcon\Exceptions\CurlException;
+    namespace teamicon\apikit\Traits;
+    use \teamicon\apikit\Exceptions\CustomException;
 
-    require_once(__DIR__ . "/../Exceptions/CurlException.php");
+    require_once(__DIR__ . "/../Exceptions/CustomException.php");
 
     trait Curl {
         protected static function Curl(string $url, string $method, bool $forceHeaders = false, array $headers = [], array $params = []) : array {

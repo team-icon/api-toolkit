@@ -1,6 +1,9 @@
 <?php
-    namespace TeamIcon\TeamIconApiToolkit\Database;
-    use \TeamIcon\Exceptions\CustomException;
+    namespace teamicon\apikit\Database;
+    use mysqli;
+    use mysqli_stmt;
+    use \teamicon\apikit\Exceptions\CustomException;
+    use Throwable;
 
     require_once(__DIR__ . "/DbException.php");
     require_once(__DIR__ . "/../Exceptions/CustomException.php");
@@ -10,12 +13,12 @@
 
         protected static int $InsertId;
 
-        protected \mysqli $Conn;
+        protected mysqli $Conn;
 
         public function __construct() { $this->Conn = static::GetIstance(); }
 
         abstract protected static function GetDatabaseName() : string;
-        abstract protected static function GetIstance() : \mysqli;
+        abstract protected static function GetIstance() : mysqli;
 
         public function GetLastId() : int { return self::$InsertId; }
 
@@ -23,7 +26,7 @@
             if($query == "") throw new CustomException("Query parameter is empty");
             if(!preg_match("/^(insert|update|delete).*$/i", $query)) throw new CustomException("Execute function has been called with a wrong query");
             try { if($this->Conn == null || !is_resource($this->Conn)) $this->Conn = static::GetIstance(); }
-            catch(\Throwable $ex) { $this->Conn = static::GetIstance(); }
+            catch(Throwable $ex) { $this->Conn = static::GetIstance(); }
             $isInsert = preg_match("/^insert.*$/i", $query);
             $stmt = null;
             if($types == "" || count($params) == 0) throw new CustomException("Invalid parameters: types and params can't be empty");
@@ -59,7 +62,7 @@
             if($query == "") throw new CustomException("Query is empty");
             if(!preg_match("/^select.*/i", $query)) throw new CustomException("Query is not a valid select statement");
             try { if($this->Conn == null || !is_resource($this->Conn)) $this->Conn = static::GetIstance(); }
-            catch(\Throwable $ex) { $this->Conn = static::GetIstance(); }
+            catch(Throwable $ex) { $this->Conn = static::GetIstance(); }
             if($types == "" && count($params) == 0) { //standard query
                 $res = $this->Conn->query($query);
                 if($res->num_rows > 0) while($row = $res->fetch_assoc()) array_push($arr, $row);
@@ -112,7 +115,7 @@
             return $res[$firstKey];
         }
 
-        public function GetErrorMessage(\mysqli_stmt $stmt = null) : string {
+        public function GetErrorMessage(mysqli_stmt $stmt = null) : string {
             $dbErr = !is_null($this->Conn) ? $this->Conn->error : "";
             if($dbErr == "") $dbErr = "n.d.";
             $stmtErr = !is_null($stmt) ? $stmt->error : "";

@@ -1,7 +1,7 @@
 <?php
-    namespace TeamIcon\TeamIconApiToolkit\Exceptions;
+    namespace teamicon\apikit\Exceptions;
 
-    use TeamIcon\RouteParameters;
+    use \teamicon\apikit\RouteParameters;
 
     require_once(__DIR__ . "/CustomException.php");
     require_once(__DIR__ . "/../RouteParameters.php");

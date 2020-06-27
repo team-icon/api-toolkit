@@ -1,5 +1,5 @@
 <?php
-    namespace TeamIcon\TeamIconApiToolkit;
+    namespace teamicon\apikit;
 
     require_once(__DIR__ . "/Entity.php");
 

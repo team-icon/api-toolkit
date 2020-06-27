@@ -1,6 +1,6 @@
 <?php
-    namespace TeamIcon\TeamIconApiToolkit\Database;
-    use \TeamIcon\Exceptions\CustomException;
+    namespace teamicon\apikit\Database;
+    use \teamicon\apikit\Exceptions\CustomException;
 
     require_once(__DIR__ . "/../Exceptions/CustomException.php");
 

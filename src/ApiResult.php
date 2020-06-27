@@ -1,5 +1,5 @@
 <?php
-    namespace TeamIcon\TeamIconApiToolkit;
+    namespace teamicon\apikit;
 
     final class ApiResult {
         public const OK = "OK";

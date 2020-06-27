@@ -1,5 +1,5 @@
 <?php
-    namespace TeamIcon\TeamIconApiToolkit\Traits;
+    namespace teamicon\apikit\Traits;
 
     trait ServerUtilities {
         protected static function GetClientIp() : string {

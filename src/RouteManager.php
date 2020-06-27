@@ -1,6 +1,7 @@
 <?php
-    namespace TeamIcon\TeamIconApiToolkit;
-    use \TeamIcon\Exceptions\{CustomException, InvalidArgumentException};
+    namespace teamicon\apikit;
+    use \teamicon\apikit\Exceptions\{CustomException, InvalidArgumentException};
+    use Throwable;
 
     require_once(__DIR__ . "/RouteParameters.php");
     require_once(__DIR__ . "/Exceptions/CustomException.php");
@@ -96,9 +97,9 @@
                 $ip = self::$Info["ip"];
                 call_user_func_array($initCheckDelegate, [$ip]);
                 $rm = new RouteManager($listOfAllowedEntities);
-                $result = call_user_func_array($routeDelegate, [$sc, $uri, $rm->rp]);
+                $result = call_user_func_array($routeDelegate, [$sc, $uri, $lng, $rm->rp]);
                 return json_encode($result, true);
-            } catch(\Throwable $ex) { return json_encode(ApiResult::Ko($ex->getMessage(), $ex->getCode() ?: 400), true); }
+            } catch(Throwable $ex) { return json_encode(ApiResult::Ko($ex->getMessage(), $ex->getCode() ?: 400), true); }
         }
     }
 ?>
