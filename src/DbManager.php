@@ -4,7 +4,7 @@
     use mysqli_stmt;
     use Throwable;
 
-    abstract class DbManager {
+    final class DbManager {
         public const APEX_ESCAPE = "`";
 
         protected mysqli $Conn;
