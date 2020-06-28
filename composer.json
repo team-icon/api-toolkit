@@ -9,6 +9,11 @@
             "email": "m.sarti@teamicon.it"
         }
     ],
+    "autoload": {
+        "pswr-4": {
+            "teamicon\\apikit\\": "src/"
+        }
+    },
     "minimum-stability": "dev",
     "require": {
         "ext-curl": "*",
