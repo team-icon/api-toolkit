@@ -52,7 +52,7 @@ This class is inherit from Exception and it will use to identify internal except
 ### ApiResult 
 It's used to create a standard response.
 ### DbManager
-This class helps user to use the database with a set of fuction pre built
+This class helps user to use the database with a set of fuction pre built. You must be create an instance of the class with all parameters to connect to db. After this operation you might use Query or Execute functions to extract dataset in an associative array or receive the number of rows edited. The parameters for these functions are similar: a query statement, a list of params type and the parameters as an associative array.
 ### Logger
 It's use to log some activities and error in the specific file.
 ### RouteManager
