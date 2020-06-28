@@ -1,8 +1,8 @@
 <?php
     namespace teamicon\apikit;
-    use \teamicon\apikit\Traits\DebugInfo;
 
-    require_once(__DIR__ . "/Traits/DebugInfo.php");
+    use DateTime;
+    use DateTimeZone;
 
     final class Logger {
         private const ERROR = "code-errors";
@@ -10,12 +10,10 @@
         private const CALL = "calls";
         private const TRACE = "trace";
 
-        use DebugInfo;
-
         private static function GetInfo(string $type) : array {
-            $info = static::DebugInfo();
-            $fileName = $info["dt-now"] . ".log";
-            $directory = __DIR__ . "/../logs/$type/";
+            $info = self::DebugInfo();
+            $fileName = $info["filename"] . ".log";
+            $directory = __DIR__ . "/logs/$type/";
             $pathFile = $directory . $fileName;
             return [
                 "function-name" => $info["function-name"],
@@ -49,6 +47,19 @@
             $info = self::GetInfo(self::TRACE);
             $txt = "[" . $info["dt-now"] . "]" . ($debug ? "DEBUG :: " : "") . "$msg";
             file_put_contents($info["path-of-file"], $txt.PHP_EOL , FILE_APPEND | LOCK_EX);
+        }
+
+        private static function DebugInfo() : array {
+            $debug = debug_backtrace();
+            $funcName = key_exists("function", $debug) ? $debug["function"] : "n.d.";
+            $className = key_exists("class", $debug) ? $debug["class"] : "n.d.";
+            $dtNow = new Datetime("now", new DateTimeZone("Europe/Rome"));
+            return [
+                "function-name" => $funcName,
+                "class-name" => $className,
+                "filename" => $dtNow->format('Ymd'),
+                "dt-now" => $dtNow->format('d/m/Y H:i:s')
+            ];
         }
     }
 ?>

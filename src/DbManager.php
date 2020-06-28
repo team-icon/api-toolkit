@@ -1,18 +1,13 @@
 <?php
-    namespace teamicon\apikit\Database;
+    namespace teamicon\apikit;
     use mysqli;
     use mysqli_stmt;
-    use \teamicon\apikit\Exceptions\CustomException;
     use Throwable;
-
-    require_once(__DIR__ . "/DbException.php");
-    require_once(__DIR__ . "/../Exceptions/CustomException.php");
 
     abstract class DbManager {
         public const APEX_ESCAPE = "`";
 
         protected static int $InsertId;
-
         protected mysqli $Conn;
 
         public function __construct() { $this->Conn = static::GetIstance(); }
@@ -23,13 +18,13 @@
         public function GetLastId() : int { return self::$InsertId; }
 
         public function Execute(string $query, string $types, array $params) : int {
-            if($query == "") throw new CustomException("Query parameter is empty");
-            if(!preg_match("/^(insert|update|delete).*$/i", $query)) throw new CustomException("Execute function has been called with a wrong query");
+            if($query == "") throw new ApiKitException("Query parameter is empty");
+            if(!preg_match("/^(insert|update|delete).*$/i", $query)) throw new ApiKitException("Execute function has been called with a wrong query");
             try { if($this->Conn == null || !is_resource($this->Conn)) $this->Conn = static::GetIstance(); }
             catch(Throwable $ex) { $this->Conn = static::GetIstance(); }
             $isInsert = preg_match("/^insert.*$/i", $query);
             $stmt = null;
-            if($types == "" || count($params) == 0) throw new CustomException("Invalid parameters: types and params can't be empty");
+            if($types == "" || count($params) == 0) throw new ApiKitException("Invalid parameters: types and params can't be empty");
             $stmt = $this->Conn->prepare($query);
             if($stmt) {
                 $bind_names[] = $types;
@@ -43,7 +38,9 @@
                     $note = $this->GetErrorMessage($stmt);
                     $stmt->close();
                     $this->Conn->close();
-                    throw new DbException(static::GetDatabaseName(), $query, $note);
+                    $errMsg = "The database " . static::GetDatabaseName() . " has crashed while it was lunching the query $query. Additional notes: ";
+                    $errMsg .= $note != "" ? $note : "n.d.";
+                    throw new ApiKitException($errMsg);
                 }
                 $rows = $this->Conn->affected_rows;
                 if($isInsert) self::$InsertId = $this->Conn->insert_id;
@@ -53,14 +50,16 @@
             } else {
                 $note = $this->GetErrorMessage();
                 $this->Conn->close();
-                throw new DbException(static::GetDatabaseName(), $query, $note);
+                $errMsg = "The database " . static::GetDatabaseName() . " has crashed while it was lunching the query $query. Additional notes: ";
+                $errMsg .= $note != "" ? $note : "n.d.";
+                throw new ApiKitException($errMsg);
             }
         }
 
         public function Query(string $query, string $types = "", array $params = []) : array {
             $arr = [];
-            if($query == "") throw new CustomException("Query is empty");
-            if(!preg_match("/^select.*/i", $query)) throw new CustomException("Query is not a valid select statement");
+            if($query == "") throw new ApiKitException("Query is empty");
+            if(!preg_match("/^select.*/i", $query)) throw new ApiKitException("Query is not a valid select statement");
             try { if($this->Conn == null || !is_resource($this->Conn)) $this->Conn = static::GetIstance(); }
             catch(Throwable $ex) { $this->Conn = static::GetIstance(); }
             if($types == "" && count($params) == 0) { //standard query
@@ -68,7 +67,7 @@
                 if($res->num_rows > 0) while($row = $res->fetch_assoc()) array_push($arr, $row);
                 return $arr;
             } else { //query with statement
-                if($types == "" || count($params) == 0) throw new CustomException("Request a select with statement without right parameters as input. Please check types and params fields");
+                if($types == "" || count($params) == 0) throw new ApiKitException("Request a select with statement without right parameters as input. Please check types and params fields");
                 $stmt = $this->Conn->prepare($query);
                 if($stmt) {
                     $bind_names[] = $types;
@@ -82,13 +81,17 @@
                         $note = $this->GetErrorMessage($stmt);
                         $stmt->close();
                         $this->Conn->close();
-                        throw new DbException(static::GetDatabaseName(), $query, $note);
+                        $errMsg = "The database " . static::GetDatabaseName() . " has crashed while it was lunching the query $query. Additional notes: ";
+                        $errMsg .= $note != "" ? $note : "n.d.";
+                        throw new ApiKitException($errMsg);
                     }
                     if(!$result = $stmt->get_result()) {
                         $note = $this->GetErrorMessage($stmt);
                         $stmt->close();
                         $this->Conn->close();
-                        throw new DbException(static::GetDatabaseName(), $query, "Getting result is failed. $note");
+                        $errMsg = "The database " . static::GetDatabaseName() . " has crashed while it was lunching the query $query. Additional notes: ";
+                        $errMsg .= $note != "" ? $note : "n.d.";
+                        throw new ApiKitException($errMsg);
                     }
                     while($row = $result->fetch_assoc()) array_push($arr, $row);
                     $stmt->close();
@@ -97,14 +100,16 @@
                 } else {
                     $note = $this->GetErrorMessage();
                     $this->Conn->close();
-                    throw new DbException(static::GetDatabaseName(), $query, $note);
+                    $errMsg = "The database " . static::GetDatabaseName() . " has crashed while it was lunching the query $query. Additional notes: ";
+                    $errMsg .= $note != "" ? $note : "n.d.";
+                    throw new ApiKitException($errMsg);
                 }
             }
         }
 
         public function Scalar(string $query, string $types = "", array $params = []) {
             $res = self::Query($query, $types, $params);
-            if(count($res) == 0) throw new CustomException("Select statement hasn't returned anything");
+            if(count($res) == 0) throw new ApiKitException("Select statement hasn't returned anything");
             $keys = array_keys($res);
             $firstKey = $keys[0];
             if(is_array($res[$firstKey])) {

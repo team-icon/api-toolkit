@@ -9,5 +9,10 @@
             "email": "m.sarti@teamicon.it"
         }
     ],
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "require": {
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-mysqli": "*"
+    }
 }

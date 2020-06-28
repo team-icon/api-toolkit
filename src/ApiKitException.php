@@ -1,11 +1,9 @@
 <?php
-    namespace teamicon\apikit\Exceptions;
+    namespace teamicon\apikit;
     use Exception;
-    use \teamicon\apikit\Logger;
+    require_once(__DIR__ . "/Logger.php");
 
-    require_once(__DIR__ . "/../Logger.php");
-
-    class CustomException extends Exception {
+    class ApiKitException extends Exception {
         public function __construct(string $message, int $httpCode = 400) {
             $type = get_called_class();
             $msg = "An exception of type $type occoured with these error message: $message";

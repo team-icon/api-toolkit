@@ -1,31 +1,26 @@
 <?php
     namespace teamicon\apikit;
-    use \teamicon\apikit\Exceptions\{CustomException, InvalidArgumentException};
     use Throwable;
-
-    require_once(__DIR__ . "/RouteParameters.php");
-    require_once(__DIR__ . "/Exceptions/CustomException.php");
-    require_once(__DIR__ . "/Exceptions/InvalidArgumentException.php");
 
     final class RouteManager {
         public static array $Info = [];
         private RouteParameters $rp;
 
-        private function __construct(array $listOfAllowedEntities) {
+        private function __construct() {
             $tokens = [];
             $sc = self::$Info["sc"];
             $lng = self::$Info["lng"];
             $uri = self::$Info["uri"];
             $method = self::$Info["method"];
-            if($uri == "" || $uri == "/") throw new InvalidArgumentException("uri", $uri, "Attemp to crack system detected");
-            if(count($listOfAllowedEntities) == 0) throw new InvalidArgumentException("count(listOfAllowedEntities)", count($listOfAllowedEntities), "is empty");
-            if(!in_array(strtoupper($method), ["POST", "PATCH", "DELETE", "GET"]))
-                throw new InvalidArgumentException("method", $method, "Method $method not supported", 405);
+            if($uri == "" || $uri == "/") {
+                $ip = Utility::GetClientIp();
+                Logger::WriteAnomaly("Attemp to crack the system detected from ip $ip");
+                throw new ApiKitException("Attemp to crack the system detected from ip $ip");
+            }
+            if(!in_array(strtoupper($method), ["POST", "PATCH", "DELETE", "GET"])) throw new ApiKitException("The method $method is not supported", 405);
             $roughTokens = explode("/", $uri);
             foreach($roughTokens as $t) if(trim($t) != "") $tokens[] = $t;
-            if(count($tokens) == 0) throw new CustomException("Entity not found in uri");
-            if(!in_array(strtolower($tokens[0]), $listOfAllowedEntities))
-                throw new InvalidArgumentException("tokens[0]", $tokens[0], "Entity $tokens[0] is not supported", 501);
+            if(count($tokens) == 0) throw new ApiKitException("Entity not found in uri $uri");
             switch(count($tokens)) {
                 case 1: //entity
                     $entity = strtolower($tokens[0]);
@@ -63,7 +58,7 @@
             $tokens = explode("&", $qs);
             foreach($tokens as $token) {
                 $parts = explode("=", $token);
-                if(count($parts) != 2) throw new InvalidArgumentException("numof parts", count($parts), "paramString $qs is not a valid parameter");
+                if(count($parts) != 2) throw new ApiKitException("paramString $qs is not a valid parameter. This haven't two tokens.");
                 $arr[$parts[0]] = $parts[1];
             }
             return $arr;
@@ -81,22 +76,22 @@
             if ($uri == "/") {
                 Logger::WriteAnomaly("Attempt to access at url $uri with method $method by ip $ip ($ipProxy)");
                 $errMsg = "This domain is reserved. The attempt to access without right credential has just tracked and you can't trying an action like this in future.";
-                throw new CustomException($errMsg);
+                throw new ApiKitException($errMsg);
             }
             //main logic of routing
             Logger::WriteUri($sc, $method, $uri);
             self::$Info = ["sc" => $sc, "lng" => $lng, "method" => $method, "uri" => $uri, "ip" => (trim($ip) != "" ? $ip : $ipProxy)];
         }
 
-        public static function Start(array $listOfAllowedEntities, callable $initCheckDelegate, callable $routeDelegate) : string {
+        public static function Start(callable $routeDelegate, callable $initCheckDelegate = null) : string {
             try {
                 self::Init();
                 $sc = self::$Info["sc"];
                 $uri = self::$Info["uri"];
                 $lng = self::$Info["lng"];
                 $ip = self::$Info["ip"];
-                call_user_func_array($initCheckDelegate, [$ip]);
-                $rm = new RouteManager($listOfAllowedEntities);
+                if($initCheckDelegate != null) call_user_func_array($initCheckDelegate, [$ip]);
+                $rm = new RouteManager();
                 $result = call_user_func_array($routeDelegate, [$sc, $uri, $lng, $rm->rp]);
                 return json_encode($result, true);
             } catch(Throwable $ex) { return json_encode(ApiResult::Ko($ex->getMessage(), $ex->getCode() ?: 400), true); }
