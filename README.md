@@ -60,6 +60,6 @@ It's the core of the apikit and we had discussed before about you can use it.
 ### RouteParameters
 It's an internal class to exchange info about routing.
 ### Utility
-It contains some tips to simplyfy che life of the developer.
+It contains some tips to simplyfy the life of the developer.
 ## License
 [Creative Commons Attribution Non Commercial No Derivatives 4.0 International CC-BY-NC-ND-4.0](https://spdx.org/licenses/CC-BY-NC-ND-4.0.html)
