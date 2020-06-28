@@ -34,6 +34,8 @@
 
         public function GetDatabaseName() : string { return $this->dbName; }
 
+        public function GetLastError() : string { return $this->Conn != null ? $this->Conn->connect_error : ""; }
+
         public function GetLastId() : int { return $this->InsertId; }
 
         public function Execute(string $query, string $types, array $params) : int {
