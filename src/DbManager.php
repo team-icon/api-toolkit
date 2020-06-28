@@ -15,18 +15,17 @@
         protected int $InsertId;
 
         public function __construct(string $host, string $usr, string $psw, string $dbName) {
-            $this->Conn = $this->GetInstance($host, $usr, $psw, $dbName);
+            $this->host = $host;
+            $this->usr = $usr;
+            $this->psw = $psw;
+            $this->dbName = $dbName;
+            $this->Conn = $this->GetInstance();
         }
 
-        private function GetInstance(string $host, string $usr, string $psw, string $dbName) : mysqli {
-            try {
-                $this->host = $host;
-                $this->usr = $usr;
-                $this->psw = $psw;
-                $this->dbName = $dbName;
-                return new mysqli($this->host, $this->usr, $this->psw, $this->dbName);
-            } catch(Throwable $ex) {
-                $errMsg = "An error occured when I was trying to open a connection to db $dbName. I received this error message " . $ex->getMessage();
+        private function GetInstance() : mysqli {
+            try { return new mysqli($this->host, $this->usr, $this->psw, $this->dbName); }
+            catch(Throwable $ex) {
+                $errMsg = "An error occured when I was trying to open a connection to db. I received this error message " . $ex->getMessage();
                 Logger::WriteError($errMsg);
                 throw new ApiKitException($errMsg);
             }
@@ -41,7 +40,7 @@
         public function Execute(string $query, string $types, array $params) : int {
             if($query == "") throw new ApiKitException("Query parameter is empty");
             if(!preg_match("/^(insert|update|delete).*$/i", $query)) throw new ApiKitException("Execute function has been called with a wrong query");
-            if($this->Conn == null || !is_resource($this->Conn)) throw new ApiKitException("The connection with db is closed");
+            if($this->Conn == null || !is_resource($this->Conn)) $this->Conn = $this->GetInstance();
             $isInsert = preg_match("/^insert.*$/i", $query);
             $stmt = null;
             if($types == "" || count($params) == 0) throw new ApiKitException("Invalid parameters: types and params can't be empty");
@@ -80,7 +79,7 @@
             $arr = [];
             if($query == "") throw new ApiKitException("Query is empty");
             if(!preg_match("/^select.*/i", $query)) throw new ApiKitException("Query is not a valid select statement");
-            if($this->Conn == null || !is_resource($this->Conn)) throw new ApiKitException("The connection with db is closed");
+            if($this->Conn == null || !is_resource($this->Conn)) $this->Conn = $this->GetInstance();
             if($types == "" && count($params) == 0) { //standard query
                 $res = $this->Conn->query($query);
                 if($res->num_rows > 0) while($row = $res->fetch_assoc()) array_push($arr, $row);
