@@ -10,7 +10,7 @@
         }
     ],
     "autoload": {
-        "pswr-4": {
+        "psr-4": {
             "teamicon\\apikit\\": "src/"
         }
     },
