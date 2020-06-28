@@ -2,7 +2,7 @@
     "name": "teamicon/apikit",
     "description": "A simple toolkit to help a team icon's developer to create a native php API",
     "type": "library",
-    "license": "CC-BY-ND-4.0",
+    "license": "CC-BY-NC-ND-4.0",
     "authors": [
         {
             "name": "Marco Sarti",
