@@ -45,3 +45,41 @@ function route(string $sc, string $url, RouteParameters $rp) {
     //put here your logic
 }
 ```  
+
+## List of classes in the apikit
+### ApiKitException
+This class is inherit from Exception and it will use to identify internal exception.
+### ApiResult 
+It's used to create a standard response.
+### DbManager
+It's a abstract class to help user with common functions with the use of a db mysql and derivated.
+You can create your derivated class following this sample:
+
+```php
+<?php
+    namespace yourNamespace;
+    require_once __DIR__ . "/../../vendor/autoload.php";
+    use \teamicon\apikit\DbManager;
+
+    final class MyDbManager extends DbManager {
+        private const Connection = ["HOST" => "***", "NAME" => "***", "USR" => "***", "PSW" => "***"];
+        public function __construct() { parent::__construct(); }
+        protected static function GetDatabaseName(): string { return "your database name"; }
+        protected static function GetIstance() : \mysqli { return new \mysqli(self::Connection["HOST"], self::Connection["USR"], self::Connection["PSW"], self::Connection["NAME"]); }
+    }
+?>
+``` 
+and use it like:
+```php
+namespace yourNamespace;
+$res = MyDbManager::Query("SELECT usr, active FROM user WHERE id = ?", "i", ["id" => 123]);
+$active = $res[0]["active"];
+```
+### Logger
+It's use to log some activities and error in the specific file.
+### RouteManager
+It's the core of the apikit and we had discussed before about you can use it.
+### RouteParameters
+It's an internal class to exchange info about routing.
+### Utility
+It contains some tips to simplyfy che life of the developer.
