@@ -41,16 +41,15 @@ header("Access-Control-Allow-Headers: X-SC, X-LNG, AccountKey,x-requested-with, 
 header("Content-Type: application/json");
 //preflight test
 if ($_SERVER['REQUEST_METHOD'] != 'OPTIONS') echo RouteManager::Start( 'route');
-function route(string $sc, string $url, RouteParameters $rp) {
+function route(string $sc, string $url, string $lng, RouteParameters $rp) {
     //put here your logic
 }
 ```  
-
 ## List of classes in the apikit
 ### ApiKitException
 This class is inherit from Exception and it will use to identify internal exception.
 ### ApiResult 
-It's used to create a standard response.
+It's used to create a standard response. You can use the static function OK to return the right message with the associative payload array or you can use the KO function to advise about the presence of errors in the call.
 ### DbManager
 This class helps user to use the database with a set of fuction pre built. You must be create an instance of the class with all parameters to connect to db. After this operation you might use Query or Execute functions to extract dataset in an associative array or receive the number of rows edited. The parameters for these functions are similar: a query statement, a list of params type and the parameters as an associative array.
 ### Logger
@@ -58,8 +57,22 @@ It's use to log some activities and error in the specific file.
 ### RouteManager
 It's the core of the apikit and we had discussed before about you can use it.
 ### RouteParameters
-It's an internal class to exchange info about routing.
+It's an internal class to exchange info about routing. You can receive info about:
+```php
+public function GetSC() : string { return $this->sc; }
+public function GetLanguage() : string { return $this->lng; }
+public function GetMethod() : string { return $this->method; }
+public function GetEntity() : string { return $this->entity; }
+public function GetAction() : string { return $this->action; }
+public function GetKeys() : array { return $this->keys; }
+```
 ### Utility
-It contains some tips to simplyfy the life of the developer.
+It contains some tips to simplyfy the life of the developer. The list of funcitions is:
+```php
+public static function Curl(string $url, string $method, bool $forceHeaders = false, array $headers = [], array $params = []) : array
+public static function GenerateRandomToken(int $numOfChar) : string
+public static function GetClientIp() : string
+public  static function GetClientLanguage() : string
+```
 ## License
 [Creative Commons Attribution Non Commercial No Derivatives 4.0 International CC-BY-NC-ND-4.0](https://spdx.org/licenses/CC-BY-NC-ND-4.0.html)
