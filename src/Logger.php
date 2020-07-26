@@ -10,10 +10,17 @@
         private const CALL = "calls";
         private const TRACE = "trace";
 
-        private static function GetInfo(string $type) : array {
+        private string $root;
+
+        public function __construct(string $logRoot) {
+            if($logRoot == "") throw new ApiKitException("The logRoot parameter is empty");
+            $this->root = $logRoot;
+        }
+
+        private function GetInfo(string $type) : array {
             $info = self::DebugInfo();
             $fileName = $info["filename"] . ".log";
-            $directory = __DIR__ . "/logs/$type/";
+            $directory = $this->root . "/$type/";
             $pathFile = $directory . $fileName;
             return [
                 "function-name" => $info["function-name"],
@@ -25,31 +32,31 @@
             ];
         }
 
-        public static function WriteError(string $msg) : void {
-            $info = self::GetInfo(self::ERROR);
+        public function WriteError(string $msg) : void {
+            $info = $this->GetInfo(self::ERROR);
             $txt = "[" . $info["dt-now"] . "] Error in " . $info["class-name"] . "->" . $info["function-name"] . " with this error message: $msg";
             file_put_contents($info["path-of-file"], $txt.PHP_EOL , FILE_APPEND | LOCK_EX);
         }
 
-        public static function WriteAnomaly(string $msg) : void {
-            $info = self::GetInfo(self::ANOMALIES);
+        public function WriteAnomaly(string $msg) : void {
+            $info = $this->GetInfo(self::ANOMALIES);
             $txt = "[" . $info["dt-now"] . "] Anomaly catched in " . $info["class-name"] . "->" . $info["function-name"] . " with this message: $msg";
             file_put_contents($info["path-of-file"], $txt.PHP_EOL , FILE_APPEND | LOCK_EX);
         }
 
-        public static function WriteUri(string $sc, string $method, string $uri) : void {
-            $info = self::GetInfo(self::CALL);
+        public function WriteUri(string $sc, string $method, string $uri) : void {
+            $info = $this->GetInfo(self::CALL);
             $txt = "[" . $info["dt-now"] . "] called $method on $uri with sc $sc";
             file_put_contents($info["path-of-file"], $txt.PHP_EOL , FILE_APPEND | LOCK_EX);
         }
 
-        public static function WriteTrace(string $msg, bool $debug = false) : void {
-            $info = self::GetInfo(self::TRACE);
+        public function WriteTrace(string $msg, bool $debug = false) : void {
+            $info = $this->GetInfo(self::TRACE);
             $txt = "[" . $info["dt-now"] . "]" . ($debug ? "DEBUG :: " : "") . "$msg";
             file_put_contents($info["path-of-file"], $txt.PHP_EOL , FILE_APPEND | LOCK_EX);
         }
 
-        private static function DebugInfo() : array {
+        private function DebugInfo() : array {
             $debug = debug_backtrace();
             $funcName = key_exists("function", $debug) ? $debug["function"] : "n.d.";
             $className = key_exists("class", $debug) ? $debug["class"] : "n.d.";
