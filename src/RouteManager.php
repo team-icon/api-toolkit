@@ -74,23 +74,19 @@
             $ipProxy = isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : "";
             //check syntax and logic error
             if ($uri == "/") {
-                Logger::WriteAnomaly("Attempt to access at url $uri with method $method by ip $ip ($ipProxy)");
                 $errMsg = "This domain is reserved. The attempt to access without right credential has just tracked and you can't trying an action like this in future.";
                 throw new ApiKitException($errMsg);
             }
-            //main logic of routing
-            Logger::WriteUri($sc, $method, $uri);
             self::$Info = ["sc" => $sc, "lng" => $lng, "method" => $method, "uri" => $uri, "ip" => (trim($ip) != "" ? $ip : $ipProxy)];
         }
 
-        public static function Start(callable $routeDelegate, callable $initCheckDelegate = null) : string {
+        public static function Start(callable $routeDelegate) : string {
             try {
                 self::Init();
                 $sc = self::$Info["sc"];
                 $uri = self::$Info["uri"];
                 $lng = self::$Info["lng"];
                 $ip = self::$Info["ip"];
-                if($initCheckDelegate != null) call_user_func_array($initCheckDelegate, [$sc, $uri, $lng, $ip]);
                 $rm = new RouteManager();
                 $result = call_user_func_array($routeDelegate, [$sc, $uri, $lng, $rm->rp]);
                 return json_encode($result, true);
