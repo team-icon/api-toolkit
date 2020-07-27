@@ -8,7 +8,6 @@
             $type = get_called_class();
             $msg = "An exception of type $type occoured with these error message: $message";
             parent::__construct($msg, $httpCode, null);
-            Logger::WriteError($msg);
         }
     }
 ?>
