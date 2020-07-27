@@ -26,7 +26,6 @@
             try { return new mysqli($this->host, $this->usr, $this->psw, $this->dbName); }
             catch(Throwable $ex) {
                 $errMsg = "An error occured when I was trying to open a connection to db. I received this error message " . $ex->getMessage();
-                Logger::WriteError($errMsg);
                 throw new ApiKitException($errMsg);
             }
         }

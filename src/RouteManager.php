@@ -14,7 +14,6 @@
             $method = self::$Info["method"];
             if($uri == "" || $uri == "/") {
                 $ip = Utility::GetClientIp();
-                Logger::WriteAnomaly("Attemp to crack the system detected from ip $ip");
                 throw new ApiKitException("Attemp to crack the system detected from ip $ip");
             }
             if(!in_array(strtoupper($method), ["POST", "PATCH", "DELETE", "GET"])) throw new ApiKitException("The method $method is not supported", 405);
