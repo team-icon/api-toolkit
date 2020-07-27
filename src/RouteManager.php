@@ -90,7 +90,7 @@
                 $uri = self::$Info["uri"];
                 $lng = self::$Info["lng"];
                 $ip = self::$Info["ip"];
-                if($initCheckDelegate != null) call_user_func_array($initCheckDelegate, [$ip]);
+                if($initCheckDelegate != null) call_user_func_array($initCheckDelegate, [$sc, $uri, $lng, $ip]);
                 $rm = new RouteManager();
                 $result = call_user_func_array($routeDelegate, [$sc, $uri, $lng, $rm->rp]);
                 return json_encode($result, true);
